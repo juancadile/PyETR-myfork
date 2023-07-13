@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "pyetr"
+version = "0.1.0"
+description = ""
+authors = ["mark-todd <markpeter.todd@hotmail.co.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
