@@ -1,9 +1,7 @@
-from ast import Tuple
-from copy import copy
-from dataclasses import dataclass
-from typing import Optional, overload
 
-from numpy import issubsctype
+from dataclasses import dataclass
+from typing import Generic, Optional, TypeVar
+
 
 
 
@@ -31,12 +29,18 @@ class ArbitraryObject:
         self.name = name
         self.is_existential = is_existential
 
+class Emphasis:
+    def __init__(self, t: "Term | ArbitraryObject") -> None:
+        pass
+
+
 class Term:
-    def __init__(self, f: Function, t: Optional[tuple["Term | ArbitraryObject"]] = None):
+    def __init__(self, f: Function, t: Optional[tuple["Term | ArbitraryObject | Emphasis"]] = None):
         if t is None and f is not None and f.arity > 0:
             raise ValueError("Inconsistent")
         self.f = f
         self.t = t
+
 
 # Changed if clause in 4.2 to separate Arbitrary Objects from Term
 
@@ -73,17 +77,21 @@ class Predicate:
 equals_p = Predicate("=", 2)
 
 
-
 class Atom:
-    def __init__(self, predicate: Predicate, terms: tuple[Term | ArbitraryObject]) -> None:
+    def __init__(
+        self, 
+        predicate: Predicate, 
+        terms: tuple[Term | ArbitraryObject | Emphasis,...]
+    ) -> None:
         if len(terms) != predicate.arity:
             raise ValueError("Inconsistent")
         self.predicate = predicate
         self.terms = terms
+        #atom has one or 0 emphasis
 
-
-class stateset(frozenset[Atom]):
-    def __init__(self, atoms: set[Atom]) -> None:
+T = TypeVar("T", bound=set)
+class stateset(frozenset[T], Generic[T]):
+    def __init__(self, atoms: set[T] | frozenset[T]) -> None:
         self.atoms = atoms
 
 def get_arb_objects(states:stateset) -> tuple[set[ArbitraryObject], set[ArbitraryObject]]:
@@ -118,27 +126,45 @@ class DependencyRelation:
 
     def __init__(
         self, 
-        states: stateset, 
         dependencies: set[Dependency]
     ) -> None:
+        compare_existentials(dependencies)
+
+        self.dependencies = dependencies
+    def validate(self, states: stateset):
         uni_arb_objects, exi_arb_objects = get_arb_objects(states)
         # universal to existentials that depend on them ( share a pair )
-        for d in dependencies:
+        for d in self.dependencies:
             if d.existentials.issubset(exi_arb_objects):
                 raise ValueError(f"{d.existentials} not found in states")
             if d.universal not in uni_arb_objects:
                 raise ValueError(f"{d.universal } not found in states")
-        compare_existentials(dependencies)
 
-        self.dependencies = dependencies
+class View:
+    stage: stateset
+    supposition: stateset
+    dependency_relation: DependencyRelation
 
-class dependency_relations:
-    def __init__(self, deps: set[DependencyRelation]) -> None:
-        pass
+    def __init__(
+        self, 
+        stage: stateset, 
+        supposition: stateset, 
+        dependency_relation: DependencyRelation
+    ) -> None:
+        self.stage = stage
+        self.supposition = supposition
+        dependency_relation.validate(stateset(stage.union(supposition)))
+        self.dependency_relation = dependency_relation
 
+        #view has exactly one emphasis
 
 smokes = Predicate("smokes", 1)
 existential_arb_set = ArbitraryObjectMaker(is_existential=True)
 john_smokes = Atom(smokes, (Term(f=Function("john", 0)),))
 existent_arb_obj = next(existential_arb_set)
-arbitrary_object_smokes = Atom(smokes, (existent_arb_obj,))
+arbitrary_object_smokes = Atom(smokes, (Emphasis(existent_arb_obj),))
+
+
+
+
+
