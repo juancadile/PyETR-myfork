@@ -9,30 +9,28 @@ class Function:
 
     def __init__(self, name: str, arity: int) -> None:
         if arity < 0:
-            raise ValueError("arity must be greater than 0")
+            raise ValueError("arity must not be less than 0")
         self.name = name
         self.arity = arity
 
     def __repr__(self) -> str:
         return f"Function({self.name}, {self.arity})"
 
-    def get_term(self, *args):
-        if len(args) == 0:
-            return (self,)
-        else:
-            return (self, args)
-
 
 class ArbitraryObject:
     name: str
     is_existential: bool
 
-    def __init__(self, name: str, is_existential: bool):
+    def __init__(self, name: str, *, is_existential: bool):
         self.name = name
         self.is_existential = is_existential
 
     def __repr__(self) -> str:
-        return f"<ArbitraryObject name={self.name}"
+        if self.is_existential:
+            s = "Exi"
+        else:
+            s = "Uni"
+        return f"<ArbitraryObject ({s}) name={self.name}>"
 
 
 class Emphasis:
