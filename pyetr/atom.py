@@ -1,4 +1,5 @@
 __all__ = ["Predicate", "Atom", "equals_predicate"]
+
 from .term import ArbitraryObject, Emphasis, Term
 
 

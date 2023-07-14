@@ -1,4 +1,5 @@
 __all__ = ["Dependency", "DependencyRelation"]
+
 from .stateset import stateset
 from .term import ArbitraryObject
 

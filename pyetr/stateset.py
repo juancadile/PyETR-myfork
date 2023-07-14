@@ -1,4 +1,5 @@
 __all__ = ["stateset"]
+
 from typing import AbstractSet, Iterable, Optional
 
 from .atom import Atom

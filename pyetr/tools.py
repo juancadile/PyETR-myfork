@@ -1,4 +1,5 @@
 __all__ = ["ArbitraryObjectGenerator"]
+
 from .term import ArbitraryObject
 
 
