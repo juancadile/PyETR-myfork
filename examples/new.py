@@ -27,6 +27,7 @@ class ArbitraryObject:
         self.is_existential = is_existential
     def __repr__(self) -> str:
         return f"<ArbitraryObject name={self.name}"
+
 class Emphasis:
     term: "Term | ArbitraryObject"
     def __init__(self, t: "Term | ArbitraryObject") -> None:
@@ -43,6 +44,8 @@ class Emphasis:
             assert False
         return output_set
 
+    def __repr__(self) -> str:
+        return f"<Emphasis term={self.term}>"
 class Term:
     f: Function
     t: Optional[tuple["Term | ArbitraryObject | Emphasis", ...]]
@@ -88,7 +91,9 @@ class Term:
                 else:
                     assert False
             return output_set
-
+    
+    def __repr__(self) -> str:
+        return f"<Term f={self.f} t={self.t}>"
 # Changed if clause in 4.2 to separate Arbitrary Objects from Term
 
 
@@ -103,13 +108,7 @@ class ArbitraryObjectMaker:
     def __iter__(self):
         return self
 
-class QuestionMark:
-    def __repr__(self) -> str:
-        return f"QuestionMark()"
 
-question_mark_set = {QuestionMark()}
-
-# Objects need to be managed
 class Predicate:
     name: str
     verifier: bool
@@ -120,7 +119,8 @@ class Predicate:
         self.arity = arity
     def __invert__(self):
         return Predicate( self.name, not self.verifier)
-
+    def __repr__(self) -> str:
+        return f"<Predicate name={self.name}"
 equals_p = Predicate("=", 2)
 
 
@@ -140,6 +140,8 @@ class Atom:
         for term in terms:
             if isinstance(term, Term):
                 emphasis_count += term.has_emphasis
+            elif isinstance(term, Emphasis):
+                emphasis_count += 1
         if emphasis_count > 1:
             raise ValueError(f"Emphasis count in atom at: {emphasis_count}")
         else:
@@ -158,6 +160,9 @@ class Atom:
             else:
                 assert False
         return output_objs
+
+    def __repr__(self) -> str:
+        return f"<Atom predicate={self.predicate} terms={self.terms} has_emphasis={self.has_emphasis}>"
 
 class stateset(frozenset[Atom]):
     def __new__(cls, __iterable: Optional[Iterable[Atom]] = None, /) -> "stateset":
@@ -191,6 +196,16 @@ class stateset(frozenset[Atom]):
         for atom in self:
             arb_objects |= atom.arb_objects
         return arb_objects
+
+    @property
+    def has_emphasis(self) -> bool:
+        emphasis_count = 0
+        for atom in self:
+            emphasis_count += atom.has_emphasis
+        if emphasis_count > 1:
+            raise ValueError(f"Emphasis count in stateset at: {emphasis_count}")
+        else:
+            return emphasis_count == 1
 
 
 class Dependency:
@@ -256,19 +271,29 @@ class View:
         self.supposition = supposition
         dependency_relation.validate(stage.union(supposition))
         self.dependency_relation = dependency_relation
-
+        total_emphasis = stage.has_emphasis + supposition.has_emphasis
+        if total_emphasis == 2:
+            raise ValueError("Both stage and supposition have an Emphasis")
+        elif total_emphasis == 0:
+            raise ValueError("Neither stage nor supposition has an Emphasis")
         #view has exactly one emphasis
 
+from pprint import pprint
 smokes = Predicate("smokes", 1)
 existential_arb_set = ArbitraryObjectMaker(is_existential=True)
 universal_arb_set = ArbitraryObjectMaker(is_existential=False)
 john_smokes = Atom(smokes, (Term(f=Function("john", 0)),))
 existent_arb_obj = next(existential_arb_set)
 universal_arb = next(universal_arb_set)
-arbitrary_object1_smokes = Atom(smokes, (Emphasis(universal_arb),))
+arbitrary_object1_smokes = Atom(smokes, (universal_arb,))
 arbitrary_object2_smokes = Atom(smokes, (Emphasis(existent_arb_obj),))
-
-states = stateset({john_smokes, arbitrary_object1_smokes, arbitrary_object2_smokes})
+print(arbitrary_object1_smokes.has_emphasis)
+stage = stateset({john_smokes, arbitrary_object1_smokes, arbitrary_object2_smokes})
+supposition = stateset({john_smokes, arbitrary_object1_smokes, arbitrary_object1_smokes})
 dep_relation = DependencyRelation(frozenset({Dependency(universal_arb, frozenset({existent_arb_obj}))}))
-v = View(states, states, dep_relation)
+pprint(stage)
+pprint(supposition)
+print(stage.has_emphasis)
+print(supposition.has_emphasis)
+v = View(stage, supposition, dep_relation)
 print(v)
