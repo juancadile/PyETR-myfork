@@ -1,5 +1,4 @@
 
-from dataclasses import dataclass
 from typing import AbstractSet, Iterable, Optional
 
 
@@ -26,11 +25,23 @@ class ArbitraryObject:
     def __init__(self, name: str, is_existential: bool):
         self.name = name
         self.is_existential = is_existential
-
+    def __repr__(self) -> str:
+        return f"<ArbitraryObject name={self.name}"
 class Emphasis:
     term: "Term | ArbitraryObject"
     def __init__(self, t: "Term | ArbitraryObject") -> None:
         self.term = t
+    @property
+    def arb_objects(self) -> set[ArbitraryObject]:
+        output_set = set()
+        subterm = self.term
+        if isinstance(subterm, Term):
+            output_set |= subterm.arb_objects
+        elif isinstance(subterm, ArbitraryObject):
+            output_set.add(subterm)
+        else:
+            assert False
+        return output_set
 
 class Term:
     f: Function
@@ -62,6 +73,21 @@ class Term:
                 emphasis_count += element.has_emphasis
 
         return emphasis_count
+
+    @property
+    def arb_objects(self) -> set[ArbitraryObject]:
+        output_set = set()
+        if self.t is None:
+            return output_set
+        else:
+            for term in self.t:
+                if isinstance(term, Term) or isinstance(term, Emphasis):
+                    output_set |= term.arb_objects
+                elif isinstance(term, ArbitraryObject):
+                    output_set.add(term)
+                else:
+                    assert False
+            return output_set
 
 # Changed if clause in 4.2 to separate Arbitrary Objects from Term
 
@@ -121,7 +147,17 @@ class Atom:
         self.terms = terms
 
         # Invarient: atom has one or 0 emphasis
-
+    @property
+    def arb_objects(self) -> set[ArbitraryObject]:
+        output_objs = set()
+        for term in self.terms:
+            if isinstance(term, Term) or isinstance(term, Emphasis):
+                output_objs |= term.arb_objects
+            elif isinstance(term, ArbitraryObject):
+                output_objs.add(term)
+            else:
+                assert False
+        return output_objs
 
 class stateset(frozenset[Atom]):
     def __new__(cls, __iterable: Optional[Iterable[Atom]] = None, /) -> "stateset":
@@ -149,49 +185,61 @@ class stateset(frozenset[Atom]):
     def __xor__(self, __value: AbstractSet[Atom]) -> "stateset":
         return stateset(super().__xor__(__value))
 
+    @property
+    def arb_objects(self) -> set[ArbitraryObject]:
+        arb_objects: set[ArbitraryObject] = set()
+        for atom in self:
+            arb_objects |= atom.arb_objects
+        return arb_objects
 
-def get_arb_objects(states:stateset) -> tuple[set[ArbitraryObject], set[ArbitraryObject]]:
-    raise NotImplementedError
 
-def is_related(set1: set[ArbitraryObject], set2:set[ArbitraryObject]):
-    return set1.issubset(set2) or set2.issubset(set1)
-
-@dataclass
 class Dependency:
     universal: ArbitraryObject
-    existentials: set[ArbitraryObject]
+    existentials: frozenset[ArbitraryObject]
+    def __init__(self, universal: ArbitraryObject, existentials: frozenset[ArbitraryObject]) -> None:
+        self.universal = universal
+        self.existentials = existentials
 
-
-def test_matroyshka(deps: set[Dependency]):
-    existentials: list[set[ArbitraryObject]] = [
+def test_matroyshka(deps: frozenset[Dependency]):
+    existentials: list[frozenset[ArbitraryObject]] = [
         d.existentials for d in deps
     ]
     stack = existentials.copy()
     while stack:
-        compare_set1 = stack.pop(0)
-        for compare_set2 in stack:
-            if not is_related(compare_set1, compare_set2):
-                raise ValueError(f'Existential sets do not meet Matroyshka condition. \nSet1: {compare_set1}\nSet2: {compare_set2}')
+        set1 = stack.pop(0)
+        for set2 in stack:
+            if not set1.issubset(set2) or set2.issubset(set1):
+                raise ValueError(f'Existential sets do not meet Matroyshka condition. \nSet1: {set1}\nSet2: {set2}')
 
-
+UniArbObjects = set[ArbitraryObject]
+ExiArbObjects = set[ArbitraryObject]
+def separate_arb_objects(arb_objects: set[ArbitraryObject]) -> tuple[UniArbObjects, ExiArbObjects]:
+    uni_objs = set()
+    exi_objs = set()
+    for obj in arb_objects:
+        if obj.is_existential:
+            exi_objs.add(obj)
+        else:
+            uni_objs.add(obj)
+    return uni_objs, exi_objs
 
 class DependencyRelation:
-    dependencies: set[Dependency]
+    dependencies: frozenset[Dependency]
 
     def __init__(
         self, 
-        dependencies: set[Dependency]
+        dependencies: frozenset[Dependency]
     ) -> None:
         test_matroyshka(dependencies)
         self.dependencies = dependencies
     def validate(self, states: stateset):
-        uni_arb_objects, exi_arb_objects = get_arb_objects(states)
+        uni_arb_objects, exi_arb_objects = separate_arb_objects(states.arb_objects)
         # universal to existentials that depend on them ( share a pair )
         for d in self.dependencies:
-            if d.existentials.issubset(exi_arb_objects):
-                raise ValueError(f"{d.existentials} not found in states")
+            if not d.existentials.issubset(exi_arb_objects):
+                raise ValueError(f"{d.existentials} not found in existential states {exi_arb_objects}")
             if d.universal not in uni_arb_objects:
-                raise ValueError(f"{d.universal } not found in states")
+                raise ValueError(f"{d.universal } not found in universal states {uni_arb_objects}")
 
 class View:
     stage: stateset
@@ -213,6 +261,14 @@ class View:
 
 smokes = Predicate("smokes", 1)
 existential_arb_set = ArbitraryObjectMaker(is_existential=True)
+universal_arb_set = ArbitraryObjectMaker(is_existential=False)
 john_smokes = Atom(smokes, (Term(f=Function("john", 0)),))
 existent_arb_obj = next(existential_arb_set)
-arbitrary_object_smokes = Atom(smokes, (Emphasis(existent_arb_obj),))
+universal_arb = next(universal_arb_set)
+arbitrary_object1_smokes = Atom(smokes, (Emphasis(universal_arb),))
+arbitrary_object2_smokes = Atom(smokes, (Emphasis(existent_arb_obj),))
+
+states = stateset({john_smokes, arbitrary_object1_smokes, arbitrary_object2_smokes})
+dep_relation = DependencyRelation(frozenset({Dependency(universal_arb, frozenset({existent_arb_obj}))}))
+v = View(states, states, dep_relation)
+print(v)
