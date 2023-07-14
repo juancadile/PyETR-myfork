@@ -1,6 +1,6 @@
 
 from typing import AbstractSet, Iterable, Optional
-
+from pprint import pformat
 
 class Function:
     name: str
@@ -46,6 +46,7 @@ class Emphasis:
 
     def __repr__(self) -> str:
         return f"<Emphasis term={self.term}>"
+
 class Term:
     f: Function
     t: Optional[tuple["Term | ArbitraryObject | Emphasis", ...]]
@@ -162,7 +163,7 @@ class Atom:
         return output_objs
 
     def __repr__(self) -> str:
-        return f"<Atom predicate={self.predicate} terms={self.terms} has_emphasis={self.has_emphasis}>"
+        return f"<Atom predicate={self.predicate} terms={self.terms}>"
 
 class stateset(frozenset[Atom]):
     def __new__(cls, __iterable: Optional[Iterable[Atom]] = None, /) -> "stateset":
@@ -278,7 +279,10 @@ class View:
             raise ValueError("Neither stage nor supposition has an Emphasis")
         #view has exactly one emphasis
 
-from pprint import pprint
+    def __repr__(self) -> str:
+        return f"<View \n  stage={pformat(self.stage)} \n  supposition={pformat(self.supposition)} \n  dep_rel={self.dependency_relation}\n>"
+
+
 smokes = Predicate("smokes", 1)
 existential_arb_set = ArbitraryObjectMaker(is_existential=True)
 universal_arb_set = ArbitraryObjectMaker(is_existential=False)
@@ -287,13 +291,10 @@ existent_arb_obj = next(existential_arb_set)
 universal_arb = next(universal_arb_set)
 arbitrary_object1_smokes = Atom(smokes, (universal_arb,))
 arbitrary_object2_smokes = Atom(smokes, (Emphasis(existent_arb_obj),))
-print(arbitrary_object1_smokes.has_emphasis)
+
 stage = stateset({john_smokes, arbitrary_object1_smokes, arbitrary_object2_smokes})
 supposition = stateset({john_smokes, arbitrary_object1_smokes, arbitrary_object1_smokes})
 dep_relation = DependencyRelation(frozenset({Dependency(universal_arb, frozenset({existent_arb_obj}))}))
-pprint(stage)
-pprint(supposition)
-print(stage.has_emphasis)
-print(supposition.has_emphasis)
+
 v = View(stage, supposition, dep_relation)
 print(v)
