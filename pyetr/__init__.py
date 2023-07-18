@@ -16,7 +16,7 @@ __all__ = [
 
 from .atom import Atom, Predicate, equals_predicate
 from .dependency import Dependency, DependencyRelation
-from .stateset import stateset
+from .stateset import state
 from .term import ArbitraryObject, Emphasis, Function, Term
 from .tools import ArbitraryObjectGenerator
 from .view import Commitment, View

@@ -3,33 +3,15 @@ __all__ = ["Predicate", "Atom", "equals_predicate"]
 from .term import ArbitraryObject, Emphasis, Term
 
 
-class Predicate:
-    name: str
-    verifier: bool
-    arity: int
-
-    def __init__(self, name: str, arity: int, _verifier: bool = True) -> None:
-        self.verifier = _verifier
-        self.name = name
-        self.arity = arity
-
-    def __invert__(self):
-        return Predicate(self.name, not self.verifier)
-
-    def __repr__(self) -> str:
-        return f"<Predicate name={self.name}"
-
-
-equals_predicate = Predicate("=", 2)
-
-
 class Atom:
-    predicate: Predicate
+    predicate: "Predicate"
     terms: tuple[Term | ArbitraryObject | Emphasis, ...]
     has_emphasis: bool
 
     def __init__(
-        self, predicate: Predicate, terms: tuple[Term | ArbitraryObject | Emphasis, ...]
+        self,
+        predicate: "Predicate",
+        terms: tuple[Term | ArbitraryObject | Emphasis, ...],
     ) -> None:
         if len(terms) != predicate.arity:
             raise ValueError("Inconsistent")
@@ -62,3 +44,29 @@ class Atom:
 
     def __repr__(self) -> str:
         return f"<Atom predicate={self.predicate} terms={self.terms}>"
+
+    def __invert__(self):
+        return Atom(~self.predicate, self.terms)
+
+
+class Predicate:
+    name: str
+    verifier: bool
+    arity: int
+
+    def __init__(self, name: str, arity: int, _verifier: bool = True) -> None:
+        self.verifier = _verifier
+        self.name = name
+        self.arity = arity
+
+    def __invert__(self):
+        return Predicate(self.name, not self.verifier)
+
+    def __repr__(self) -> str:
+        return f"<Predicate name={self.name}"
+
+    def __call__(self, terms: tuple[Term | ArbitraryObject | Emphasis, ...]) -> Atom:
+        return Atom(self, terms)
+
+
+equals_predicate = Predicate("=", 2)

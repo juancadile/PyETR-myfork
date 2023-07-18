@@ -1,6 +1,6 @@
 __all__ = ["Dependency", "DependencyRelation"]
 
-from .stateset import stateset
+from .stateset import set_of_states
 from .term import ArbitraryObject
 
 
@@ -51,7 +51,7 @@ class DependencyRelation:
         _test_matroyshka(dependencies)
         self.dependencies = dependencies
 
-    def validate(self, states: stateset):
+    def validate(self, states: set_of_states):
         uni_arb_objects, exi_arb_objects = _separate_arb_objects(states.arb_objects)
         # universal to existentials that depend on them ( share a pair )
         for d in self.dependencies:
