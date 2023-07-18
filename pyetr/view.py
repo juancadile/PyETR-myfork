@@ -1,4 +1,4 @@
-__all__ = ["View"]
+__all__ = ["View", "Commitment"]
 
 from pprint import pformat
 
@@ -30,3 +30,12 @@ class View:
 
     def __repr__(self) -> str:
         return f"<View \n  stage={pformat(self.stage)} \n  supposition={pformat(self.supposition)} \n  dep_rel={self.dependency_relation}\n>"
+
+
+class Commitment:
+    view1: View
+    view2: View
+
+    def __init__(self, view1: View, view2: View) -> None:
+        self.view1 = view1
+        self.view2 = view2

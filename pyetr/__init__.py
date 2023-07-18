@@ -11,6 +11,7 @@ __all__ = [
     "ArbitraryObject",
     "ArbitraryObjectGenerator",
     "View",
+    "Commitment",
 ]
 
 from .atom import Atom, Predicate, equals_predicate
@@ -18,4 +19,4 @@ from .dependency import Dependency, DependencyRelation
 from .stateset import stateset
 from .term import ArbitraryObject, Emphasis, Function, Term
 from .tools import ArbitraryObjectGenerator
-from .view import View
+from .view import Commitment, View
