@@ -13,7 +13,7 @@ class Dependency:
     existential: Existential
     universal: Universal
 
-    def __init__(self, universal: Universal, existential: Existential) -> None:
+    def __init__(self, *, existential: Existential, universal: Universal) -> None:
         """
         Dependency specifying a universal and the existentials that depend on it.
 
@@ -21,7 +21,6 @@ class Dependency:
             universal (Universal): The universal in question.
             existential (Existential): The existential depending on the universal.
         """
-        # TODO: Swap order in constructor
         self.existential = existential
         self.universal = universal
 
@@ -124,7 +123,7 @@ def dependencies_from_sets(
     new_deps = set()
     for uni, exi_set in sets:
         for exi in exi_set:
-            new_deps.add(Dependency(uni, exi))
+            new_deps.add(Dependency(existential=exi, universal=uni))
     return frozenset(new_deps)
 
 

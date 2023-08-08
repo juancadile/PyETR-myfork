@@ -12,7 +12,6 @@ __all__ = [
     "ArbitraryObject",
     "ArbitraryObjectGenerator",
     "View",
-    "Commitment",
     "parse_string_to_view",
 ]
 
@@ -22,4 +21,4 @@ from .parsing import parse_string_to_view
 from .stateset import SetOfStates, State
 from .term import ArbitraryObject, Emphasis, Function, Term
 from .tools import ArbitraryObjectGenerator
-from .view import Commitment, View
+from .view import View
