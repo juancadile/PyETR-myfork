@@ -75,19 +75,13 @@ def substitution(
         )
         return (unis | exis) - {arb_obj}
 
-    def _determine_substitutions(
-        arb_objects: set[ArbitraryObject],
-    ) -> dict[ArbitraryObject, ArbitraryObject]:
-        return arb_gen.redraw(arb_objects)
-
     assert len(stage.arb_objects & supposition.arb_objects) == 0
 
     old_T = dep_relation
 
     new_dep_relation = dep_relation
     new_stage = stage
-
-    subs = _determine_substitutions(Z())
+    subs = arb_gen.redraw(Z())
     new_dep_relation = new_dep_relation.replace(subs)
     new_stage = new_stage.replace(
         cast(dict[ArbitraryObject, Term | ArbitraryObject], subs)
@@ -189,9 +183,102 @@ class View:
         else:
             return f"{self.stage}^{self.supposition} deps={self.dependency_relation}"
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, View):
+            return False
+        return (
+            self.stage == other.stage
+            and self.supposition == other.supposition
+            and self.dependency_relation == other.dependency_relation
+        )
+
+    def __hash__(self) -> int:
+        return hash((self.stage, self.supposition, self.dependency_relation))
+
+    @property
+    def is_verum(self) -> bool:
+        return self.stage.is_verum and self.supposition.is_verum
+
+    @property
+    def is_falsum(self) -> bool:
+        return self.stage.is_falsum and self.supposition.is_verum
+
     @property
     def stage_supp_arb_objects(self) -> set[ArbitraryObject]:
         return self.stage.arb_objects | self.supposition.arb_objects
+
+    def replace(
+        self, replacements: dict[ArbitraryObject, Term | ArbitraryObject]
+    ) -> "View":
+        new_stage = self.stage.replace(replacements)
+        new_supposition = self.supposition.replace(replacements)
+        filtered_replacements = {
+            e: n for e, n in replacements.items() if isinstance(n, ArbitraryObject)
+        }
+        new_dep_relation = self.dependency_relation.replace(filtered_replacements)
+
+        return View(
+            stage=new_stage,
+            supposition=new_supposition,
+            dependency_relation=new_dep_relation.restriction(
+                new_stage.arb_objects | new_supposition.arb_objects
+            ),
+        )
+
+    def is_equivalent_under_arb_sub(self, other: "View") -> bool:
+        """
+        Complexity is O((n!)^2*n) where n is average num of exi and unis
+
+        For exis and unis above 9 or 10 (of each) this becomes an issue, below is fine
+        """
+        self_uni, self_exi = _separate_arb_objects(self.stage_supp_arb_objects)
+        other_uni, other_exi = _separate_arb_objects(other.stage_supp_arb_objects)
+        if len(self_uni) != len(other_uni) or len(self_exi) != len(other_exi):
+            return False
+        if (
+            len(self_uni) > 9
+            or len(self_exi) > 9
+            or len(other_uni) > 9
+            or len(other_exi) > 9
+        ):
+            raise ValueError("Too many unis or exis to feasibly compute")
+
+        for exi_perm in permutations(other_exi):
+            for uni_perm in permutations(other_uni):
+                replacements = {
+                    **dict(zip(exi_perm, self_exi)),
+                    **dict(zip(uni_perm, self_uni)),
+                }
+
+                new_view = other.replace(
+                    cast(dict[ArbitraryObject, Term | ArbitraryObject], replacements)
+                )
+                if new_view == self:
+                    return True
+        return False
+
+    def issue_matches(
+        self, other: "View"
+    ) -> set[tuple[Term | ArbitraryObject, Term | ArbitraryObject]]:
+        self_atoms_with_emphasis: list[Atom] = []
+        other_atoms_with_emphasis: list[Atom] = []
+        for state in self.stage | self.supposition:
+            for atom in state:
+                if atom.has_emphasis:
+                    self_atoms_with_emphasis.append(atom)
+
+        for state in other.stage | other.supposition:
+            for atom in state:
+                if atom.has_emphasis:
+                    other_atoms_with_emphasis.append(atom)
+
+        pairs: list[tuple[Term | ArbitraryObject, Term | ArbitraryObject]] = []
+        for atom_self in self_atoms_with_emphasis:
+            for atom_other in other_atoms_with_emphasis:
+                if atom_self.is_same_emphasis_context(atom_other):
+                    pairs.append((atom_self.emphasis_term, atom_other.emphasis_term))
+
+        return set(pairs)
 
     def _fuse_views(
         self, view: "View", inherited_dependencies: DependencyRelation
@@ -344,29 +431,6 @@ class View:
             dependencies=frozenset(final_deps),
         )
 
-    def issue_matches(
-        self, other: "View"
-    ) -> set[tuple[Term | ArbitraryObject, Term | ArbitraryObject]]:
-        self_atoms_with_emphasis: list[Atom] = []
-        other_atoms_with_emphasis: list[Atom] = []
-        for state in self.stage | self.supposition:
-            for atom in state:
-                if atom.has_emphasis:
-                    self_atoms_with_emphasis.append(atom)
-
-        for state in other.stage | other.supposition:
-            for atom in state:
-                if atom.has_emphasis:
-                    other_atoms_with_emphasis.append(atom)
-
-        pairs: list[tuple[Term | ArbitraryObject, Term | ArbitraryObject]] = []
-        for atom_self in self_atoms_with_emphasis:
-            for atom_other in other_atoms_with_emphasis:
-                if atom_self.is_same_emphasis_context(atom_other):
-                    pairs.append((atom_self.emphasis_term, atom_other.emphasis_term))
-
-        return set(pairs)
-
     def merge(self, view: "View") -> "View":
         """
         Based on Definition 4.33
@@ -438,6 +502,19 @@ class View:
             return reduce(lambda v1, v2: v1.sum(v2, r_fuse_s), views_for_sum)
         else:
             return self
+
+    def update(self, view: "View") -> "View":
+        """
+        Based on Definition 4.34
+        """
+        arb_gen = ArbitraryObjectGenerator(
+            self.stage_supp_arb_objects | view.stage_supp_arb_objects
+        )
+        shared_objs = self.stage_supp_arb_objects & view.stage_supp_arb_objects
+        view = arb_gen.novelise(shared_objs, view)
+        return (
+            self.universal_product(view).existential_sum(view).answer(view).merge(view)
+        )
 
     def _uni_exi_condition(self, view: "View") -> bool:
         """
@@ -576,31 +653,6 @@ class View:
         else:
             return self
 
-    def update(self, view: "View") -> "View":
-        """
-        Based on Definition 4.34
-        """
-        arb_gen = ArbitraryObjectGenerator(
-            self.stage_supp_arb_objects | view.stage_supp_arb_objects
-        )
-        shared_objs = self.stage_supp_arb_objects & view.stage_supp_arb_objects
-        view = arb_gen.novelise(shared_objs, view)
-        return (
-            self.universal_product(view).existential_sum(view).answer(view).merge(view)
-        )
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, View):
-            return False
-        return (
-            self.stage == other.stage
-            and self.supposition == other.supposition
-            and self.dependency_relation == other.dependency_relation
-        )
-
-    def __hash__(self) -> int:
-        return hash((self.stage, self.supposition, self.dependency_relation))
-
     def division(self, other: "View") -> "View":
         """
         Based on definition 4.38
@@ -633,14 +685,6 @@ class View:
             )
         else:
             return self
-
-    @property
-    def is_verum(self) -> bool:
-        return self.stage.is_verum and self.supposition.is_verum
-
-    @property
-    def is_falsum(self) -> bool:
-        return self.stage.is_falsum and self.supposition.is_verum
 
     def factor(self, other: "View") -> "View":
         """
@@ -697,6 +741,9 @@ class View:
         )
 
     def depose(self) -> "View":
+        """
+        Based on definition 4.45
+        """
         verum = SetOfStates({State({})})
         new_stage = self.stage | self.supposition.negation()
         return View(
@@ -704,53 +751,3 @@ class View:
             supposition=verum,
             dependency_relation=self.dependency_relation,
         )
-
-    def replace(
-        self, replacements: dict[ArbitraryObject, Term | ArbitraryObject]
-    ) -> "View":
-        new_stage = self.stage.replace(replacements)
-        new_supposition = self.supposition.replace(replacements)
-        filtered_replacements = {
-            e: n for e, n in replacements.items() if isinstance(n, ArbitraryObject)
-        }
-        new_dep_relation = self.dependency_relation.replace(filtered_replacements)
-
-        return View(
-            stage=new_stage,
-            supposition=new_supposition,
-            dependency_relation=new_dep_relation.restriction(
-                new_stage.arb_objects | new_supposition.arb_objects
-            ),
-        )
-
-    def is_equivalent_under_arb_sub(self, other: "View") -> bool:
-        """
-        Complexity is O((n!)^2*n) where n is average num of exi and unis
-
-        For exis and unis above 9 or 10 (of each) this becomes an issue, below is fine
-        """
-        self_uni, self_exi = _separate_arb_objects(self.stage_supp_arb_objects)
-        other_uni, other_exi = _separate_arb_objects(other.stage_supp_arb_objects)
-        if len(self_uni) != len(other_uni) or len(self_exi) != len(other_exi):
-            return False
-        if (
-            len(self_uni) > 9
-            or len(self_exi) > 9
-            or len(other_uni) > 9
-            or len(other_exi) > 9
-        ):
-            raise ValueError("Too many unis or exis to feasibly compute")
-
-        for exi_perm in permutations(other_exi):
-            for uni_perm in permutations(other_uni):
-                replacements = {
-                    **dict(zip(exi_perm, self_exi)),
-                    **dict(zip(uni_perm, self_uni)),
-                }
-
-                new_view = other.replace(
-                    cast(dict[ArbitraryObject, Term | ArbitraryObject], replacements)
-                )
-                if new_view == self:
-                    return True
-        return False

@@ -17,7 +17,6 @@ def basic_step(v: tuple[View, ...]) -> View:
 
 def default_inference_procedure(v: tuple[View, ...]) -> View:
     g_prime = basic_step(v)
-    # Step1
     for i, view in enumerate(v):
         if i == 0:
             g_prime = g_prime.factor(view.depose())

@@ -185,7 +185,7 @@ class Term:
     def detailed(self) -> str:
         if self.t is None:
             return f"<Term f={self.f.detailed} t=()>"
-        return f"<Term f={self.f.detailed} t={','.join(t.detailed for t in self.t)}>"
+        return f"<Term f={self.f.detailed} t=({','.join(t.detailed for t in self.t)},)>"
 
     def __repr__(self) -> str:
         if self.f.arity == 0:

@@ -11,30 +11,30 @@ class TestFunction:
 
     def test_valid(self):
         test = Function("good_func", 1)
-        assert repr(test) == "Function(good_func, 1)"
+        assert test.detailed == "Function(good_func, 1)"
 
 
 class TestArbitraryObject:
     def test_valid_exi(self):
         test = ArbitraryObject("x1", is_existential=True)
-        assert repr(test) == "<ArbitraryObject (Exi) name=x1>"
+        assert test.detailed == "<ArbitraryObject (Exi) name=x1>"
 
     def test_valid_uni(self):
         test = ArbitraryObject("x1", is_existential=False)
-        assert repr(test) == "<ArbitraryObject (Uni) name=x1>"
+        assert test.detailed == "<ArbitraryObject (Uni) name=x1>"
 
 
 class TestEmphasis:
     def test_valid_term(self, term):
         test = Emphasis(term)
         assert (
-            repr(test)
+            test.detailed
             == "<Emphasis term=<Term f=Function(func, 1) t=(<ArbitraryObject (Exi) name=x1>,)>>"
         )
 
     def test_valid_arb_obj(self, exi_arb_obj):
         test = Emphasis(exi_arb_obj)
-        assert repr(test) == "<Emphasis term=<ArbitraryObject (Exi) name=x1>>"
+        assert test.detailed == "<Emphasis term=<ArbitraryObject (Exi) name=x1>>"
 
     def test_extract_arb_obj(self, exi_arb_obj):
         test = Emphasis(exi_arb_obj)
@@ -45,5 +45,6 @@ class TestTerm:
     def test_valid(self, func, exi_arb_obj):
         t = Term(func, (exi_arb_obj,))
         assert (
-            repr(t) == "<Term f=Function(func, 1) t=(<ArbitraryObject (Exi) name=x1>,)>"
+            t.detailed
+            == "<Term f=Function(func, 1) t=(<ArbitraryObject (Exi) name=x1>,)>"
         )
