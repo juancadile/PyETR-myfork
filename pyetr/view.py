@@ -273,10 +273,10 @@ class View:
         """
         if inherited_dependencies is None:
             # Corresponds to line 2
-            return self._product(view, DependencyRelation(set(), set(), frozenset()))
+            return self._sum(view, DependencyRelation(set(), set(), frozenset()))
         else:
             # Corresponds to line 1
-            return self._product(view, inherited_dependencies)
+            return self._sum(view, inherited_dependencies)
 
     def answer(self, other: "View") -> "View":
         """
