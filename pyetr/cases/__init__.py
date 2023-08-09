@@ -39,8 +39,8 @@ class e1(BaseExample):
     """
 
     v: tuple[View, View] = (
-        ps("∀x (IsArcheon(x) → HasNucleus(x))"),
-        ps("IsArcheon(Halobacterium())"),
+        ps("∀x (IsArcheon(x*) → IsArcheon(x) ∧ HasNucleus(x))"),
+        ps("IsArcheon(Halobacterium()*)"),
     )
     c: View = ps("IsArcheon(Halobacterium()) ∧ HasNucleus(Halobacterium())")
 

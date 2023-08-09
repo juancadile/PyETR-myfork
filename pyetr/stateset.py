@@ -189,7 +189,17 @@ class SetOfStates(frozenset[State]):
         """
         Based on definition 4.29
         """
-        return len(self.intersection(other))
+
+        def _get_atoms(s: "SetOfStates"):
+            atoms = set()
+            for state in s:
+                for a in state:
+                    atoms.add(a.excluding_emphasis)
+            return atoms
+
+        self_atoms = _get_atoms(self)
+        other_atoms = _get_atoms(other)
+        return len(self_atoms.intersection(other_atoms))
 
     def __repr__(self) -> str:
         terms = ",".join([repr(i) for i in self])

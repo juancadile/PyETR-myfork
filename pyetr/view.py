@@ -463,7 +463,6 @@ class View:
             )
             views_for_sum: list[View] = []
             for gamma in self.stage:
-                # TODO: What to do if m_prime(gamma) is empty?
                 m_prime = _m_prime(gamma)
                 if len(m_prime) == 0:
                     views_for_sum.append(
