@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 
+import pyetr.cases
 from pyetr import ArbitraryObject, Function
 from pyetr.cases import BaseExample
 from pyetr.term import Term
@@ -12,15 +13,15 @@ class ExampleCollector(pytest.File):
     def collect(self):
         classes: list[ExampleItem] = []
         assert self.parent is not None
-        for name, obj in vars(self.fspath.pyimport()).items():
+        for name, case in vars(pyetr.cases).items():
             if (
-                isinstance(obj, type)
-                and issubclass(obj, BaseExample)
-                and obj != BaseExample
+                isinstance(case, type)
+                and issubclass(case, BaseExample)
+                and case != BaseExample
             ):
                 classes.append(
                     ExampleItem.from_parent(
-                        parent=self.parent, test_class=obj, name=name
+                        parent=self.parent, test_class=case, name=name
                     )
                 )
         return classes
