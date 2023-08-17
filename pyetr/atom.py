@@ -24,13 +24,11 @@ class Atom:
         emphasis_count = 0
         for term in terms:
             if isinstance(term, Term):
-                emphasis_count += term.has_emphasis
+                emphasis_count += term.emphasis_count
             elif isinstance(term, Emphasis):
                 emphasis_count += 1
         self.emphasis_count = emphasis_count
         self.terms = terms
-
-        # Invarient: atom has one or 0 emphasis
 
     @property
     def arb_objects(self) -> set[ArbitraryObject]:
@@ -65,7 +63,8 @@ class Atom:
             for term in self.terms:
                 if isinstance(term, Emphasis):
                     return term.term
-                elif isinstance(term, Term) and term.has_emphasis:
+                elif isinstance(term, Term) and term.emphasis_count > 0:
+                    assert term.emphasis_count == 1
                     return term.emphasis_term
             assert False
         else:
@@ -134,12 +133,6 @@ class Atom:
     def excluding_emphasis(self) -> "Atom":
         new_terms = [term.excluding_emphasis for term in self.terms]
         return Atom(predicate=self.predicate, terms=tuple(new_terms))
-
-    def is_same_excl_emphasis(self, other: "Atom") -> bool:
-        if self.predicate != other.predicate:
-            return False
-        else:
-            return self.excluding_emphasis == other.excluding_emphasis
 
     def is_same_emphasis_context(self, other: "Atom") -> bool:
         if self.predicate != other.predicate and self.predicate != ~other.predicate:

@@ -142,7 +142,7 @@ class Emphasis:
 class Term:
     f: Function
     t: Optional[tuple["Term | ArbitraryObject | Emphasis", ...]]
-    has_emphasis: bool
+    emphasis_count: int
 
     def __init__(
         self,
@@ -156,15 +156,9 @@ class Term:
         self.f = f
         self.t = t
         if t is None:
-            self.has_emphasis = False
+            self.emphasis_count = 0
         else:
-            emphasis_count = self._count_emphasis(t)
-            if emphasis_count > 1:
-                raise ValueError(
-                    f"Emphasis in term with func: {self.f} greater than 1. Count: {emphasis_count})"
-                )
-            else:
-                self.has_emphasis = emphasis_count == 1
+            self.emphasis_count = self._count_emphasis(t)
 
     @staticmethod
     def _count_emphasis(t: tuple["Term | ArbitraryObject | Emphasis", ...]) -> int:
@@ -173,7 +167,7 @@ class Term:
             if isinstance(element, Emphasis):
                 emphasis_count += 1
             elif isinstance(element, Term):
-                emphasis_count += element.has_emphasis
+                emphasis_count += element.emphasis_count
 
         return emphasis_count
 
@@ -288,17 +282,18 @@ class Term:
 
     @property
     def emphasis_term(self) -> "Term | ArbitraryObject":
-        if self.has_emphasis and self.t is not None:
+        if self.emphasis_count == 1 and self.t is not None:
             for term in self.t:
                 if isinstance(term, Emphasis):
                     return term.term
                 elif isinstance(term, Term):
-                    if term.has_emphasis:
+                    if term.emphasis_count > 0:
+                        assert term.emphasis_count == 1
                         return term.emphasis_term
             assert False
         else:
             raise ValueError(
-                f"Emphasis term requested for term {self} - term has no emphasis"
+                f"Emphasis term requested for term {self} - term does not have exactly one emphasis"
             )
 
 
