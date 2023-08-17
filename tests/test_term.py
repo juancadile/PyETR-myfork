@@ -13,6 +13,24 @@ class TestFunction:
         test = Function("good_func", 1)
         assert test.detailed == "Function(good_func, 1)"
 
+    def test_same_name_different_arity(self):
+        func1 = Function(name="gentoo", arity=0)
+        func2 = Function(name="gentoo", arity=1)
+        with pytest.raises(
+            ValueError,
+            match="Equality on two functions of same name gentoo, gentoo, different arity 0, 1",
+        ):
+            func1.__eq__(func2)
+
+    def test_eq_diff_obj(self):
+        func1 = Function(name="gentoo", arity=0)
+        arb = ArbitraryObject(name="thing", is_existential=True)
+        assert not func1 == arb
+
+    def test_repr(self):
+        func = Function(name="gentoo", arity=0)
+        assert repr(func) == "Function(gentoo, 0)"
+
 
 class TestArbitraryObject:
     def test_valid_exi(self):
@@ -22,6 +40,17 @@ class TestArbitraryObject:
     def test_valid_uni(self):
         test = ArbitraryObject("x1", is_existential=False)
         assert test.detailed == "<ArbitraryObject (Uni) name=x1>"
+
+    def test_repr(self):
+        func = ArbitraryObject(name="gentoo", is_existential=True)
+        assert repr(func) == "gentoo_e"
+        func = ArbitraryObject(name="gentoo", is_existential=False)
+        assert repr(func) == "gentoo_u"
+
+    def test_eq_diff_obj(self):
+        func1 = Function(name="gentoo", arity=0)
+        arb = ArbitraryObject(name="thing", is_existential=True)
+        assert not arb == func1
 
 
 class TestEmphasis:
