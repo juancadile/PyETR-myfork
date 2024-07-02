@@ -126,7 +126,7 @@ class ArbitraryObjectGenerator:
             view (View): The current view
 
         Returns:
-            View: The new view with arbirary objects replaced.
+            View: The new view with arbitrary objects replaced.
         """
         return view.replace(
             typing.cast(dict[ArbitraryObject, Term], self.redraw(arb_objects))
@@ -140,7 +140,7 @@ class ArbitraryObjectGenerator:
             view (View): The current view
 
         Returns:
-            View: The new view with all arbirary objects replaced.
+            View: The new view with all arbitrary objects replaced.
         """
         return self.novelise(view.stage_supp_arb_objects, view)
 

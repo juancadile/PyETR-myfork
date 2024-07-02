@@ -77,7 +77,7 @@ class DoAtomLike(Generic[AtomType]):
     def __repr__(self) -> str:
         terms = ",".join([repr(i) for i in self.atoms])
         if self.polarity:
-            tilda = ""
+            tilde = ""
         else:
-            tilda = "~"
-        return f"{tilda}DO({terms})"
+            tilde = "~"
+        return f"{tilde}DO({terms})"

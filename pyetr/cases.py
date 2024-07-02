@@ -1285,16 +1285,16 @@ class e51(BasicStep, BaseExample):
     Example 51, p131
 
     P1: Every archaeon has a nucleus
-    P2: Halobacterium is an archeon
+    P2: Halobacterium is an archaeon
 
     C: Halobacterium is an archaeon and has a nucleus
     """
 
     v: tuple[View, View] = (
-        ps("∀x {IsArcheon(x*)HasNucleus(x)}^{IsArcheon(x*)}"),
-        ps("{IsArcheon(Halobacterium()*)}"),
+        ps("∀x {IsArchaeon(x*)HasNucleus(x)}^{IsArchaeon(x*)}"),
+        ps("{IsArchaeon(Halobacterium()*)}"),
     )
-    c: View = ps("{HasNucleus(Halobacterium())IsArcheon(Halobacterium()*)}")
+    c: View = ps("{HasNucleus(Halobacterium())IsArchaeon(Halobacterium()*)}")
 
 
 class e52(BasicStep, BaseExample):
@@ -1534,14 +1534,14 @@ class e65(BaseExample):
     Example 65, p190, p224
 
     (Base-rate neglect with doctors and realistic disease) Imagine you conduct
-    a screening using the hemoccult test in a certain region. For symptom-free
-    people over 50 years old who participate in screening using the hemocult test,
+    a screening using the Hemoccult test in a certain region. For symptom-free
+    people over 50 years old who participate in screening using the Hemoccult test,
     the following information is available for this region.
 
     The probability that one of these people has colorectal cancer is 0.3%. If a
     person has colorectal cancer, the probability is 50 that he will have a positive
-    hemocult test. If a person does not have a colorectal cancer, the probability is
-    3% that he will still have a positive hemoccult test in your screening. What is
+    Hemoccult test. If a person does not have a colorectal cancer, the probability is
+    3% that he will still have a positive Hemoccult test in your screening. What is
     the probability that this person actually has colorectal cancer?
     """
 
@@ -2030,7 +2030,8 @@ class e84ii(WhatIsProb, BaseExample):
     """
     Example 84, p215
 
-    There is a box in which there is a grey marble, or else a white marble, or else a mauve marble, but no more than one marble.
+    There is a box in which there is a grey marble, or else a white marble, or else a mauve marble,
+    but no more than one marble.
 
     Given the preceding assertion, what is the probability of the following
     situation?
@@ -2150,7 +2151,7 @@ class e92_base:
     """
     Example 92, p253, p274
     Imagine that you serve on the jury of an only-child sole-custody case following a relatively
-    messy divorce. The facts of the case are compilicated by ambiguous economic, social, and
+    messy divorce. The facts of the case are complicated by ambiguous economic, social, and
     emotional considerations, and you decide to base your decision entirely on the following
     few observations.
 
@@ -2306,7 +2307,7 @@ class new_e5(Query, BaseExample):
     c = ps("∃e ∃d ∃f {P(d*)Q(f*)Q(e*)}")
 
 
-class new_e6_leibnitz(Factor, BaseExample):
+class new_e6_leibniz(Factor, BaseExample):
     v = (ps("Ea Eb {P(f(a), a)~P(f(b), a)==(a,b)}"), ps("{}"))
     c = ps("{}")
 

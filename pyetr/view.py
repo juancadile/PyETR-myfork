@@ -184,7 +184,7 @@ def division_presupposition(
         other_supposition (Supposition): Ψ
 
     Returns:
-        bool: True if the presupposition is satisified
+        bool: True if the presupposition is satisfied
     """
 
     def division_cond(delta: State) -> bool:
@@ -510,10 +510,10 @@ class View:
         else:
             issue_string = f" issues={self.issue_structure}"
 
-        quants = get_quantifiers(
+        quantifiers = get_quantifiers(
             self.dependency_relation,
         )
-        quant_str = " ".join([i.to_string() for i in quants])
+        quant_str = " ".join([i.to_string() for i in quantifiers])
         end_str = " " if len(quant_str) > 0 else ""
         return f"{quant_str}{end_str}{self.weights}^{self.supposition}{issue_string}{dep_string}"
 

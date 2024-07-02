@@ -346,8 +346,8 @@ def build_maps(
                 name=predicate.name, arity=len(predicate.args)
             )
         else:
-            exising_predicate = predicate_map[predicate.name]
-            if exising_predicate.arity != len(predicate.args):
+            existing_predicate = predicate_map[predicate.name]
+            if existing_predicate.arity != len(predicate.args):
                 raise ValueError(
                     f"Parsing predicate {predicate} has different arity than existing {predicate_map[predicate.name]}"
                 )
@@ -359,8 +359,8 @@ def build_maps(
                 name=function.name, arity=len(function.args)
             )
         else:
-            exising_function = function_map[function.name]
-            if exising_function.arity != len(function.args):
+            existing_function = function_map[function.name]
+            if existing_function.arity != len(function.args):
                 raise ValueError(
                     f"Parsing function {function} has different arity than existing {function_map[function.name]}"
                 )

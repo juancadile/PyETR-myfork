@@ -29,9 +29,9 @@ def _get_open_terms(term: Term, search_term: Term) -> list[OpenTerm]:
             new_open_terms: list[OpenTerm] = []
             for j, subterm in enumerate(term.t):
                 open_t = _get_open_terms(subterm, search_term)
-                for new_subt in open_t:
+                for new_subterm in open_t:
                     new_subterms = copy(template_new_subterms)
-                    new_subterms[j] = new_subt
+                    new_subterms[j] = new_subterm
                     new_open_terms.append(OpenFunctionalTerm(f=term.f, t=new_subterms))
             return new_open_terms
         elif isinstance(term, ArbitraryObject):
