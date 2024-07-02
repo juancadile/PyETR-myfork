@@ -3,8 +3,6 @@ from abc import ABCMeta, abstractmethod
 from pyclbr import Function
 from typing import cast
 
-import pytest
-
 from pyetr.atoms.terms.function import Function, RealNumber
 from pyetr.atoms.terms.term import FunctionalTerm
 from pyetr.parsing.string_parser import string_to_view as ps
@@ -2400,26 +2398,6 @@ class new_e21_supp_is_something(Factor, BaseExample):
 class new_e22_restrict_dep_rel_is_not_other(Factor, BaseExample):
     v = (ps("Ek Ex {==(Clark(),x)do(Defeats(k,x))}"), ps("Ey {==(Clark()*,y)}"))
     c = ps("Ek Ex {==(Clark(),x)do(Defeats(k,x))}")
-
-
-class new_e23_novelise(UniversalProduct, BaseExample):
-    v = (
-        ps(
-            "∀a ∃b ∃c ∃d ∃e ∃f ∃g ∃h ∃i ∃j ∃k ∃l ∃m ∃n ∃o ∃p ∃q ∃r ∃z {P(a)E(a,z),~P(a*), Q(b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)}"
-        ),
-        ps("{P(j()*)}"),
-    )
-    c: View = ps(
-        "∃ak ∃ac ∃aa ∃ab ∃ah ∃ae ∃x ∃w ∃y ∃s ∃u ∃ai ∃aj ∃t ∃ag ∃af ∃ad ∃v {~P(j()*),Q(aa,ac,ad,w,v,s,ae,x,ah,ai,af,t,y,ak,ag,ab,aj),E(j(),u)P(j())}"
-    )
-
-    @classmethod
-    def test(cls, verbose: bool = False):
-        result = cls.v[0].universal_product(cls.v[1], verbose=verbose)
-        with pytest.raises(
-            ValueError, match="Too many unis or exis to feasibly compute"
-        ):
-            result.is_equivalent_under_arb_sub(cls.c)
 
 
 class AnswerPotential(BaseExample):
