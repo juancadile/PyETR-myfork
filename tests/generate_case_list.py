@@ -9,13 +9,12 @@ from pyetr.parsing.view_parser import ViewParser
 
 pattern = r'"(.*?)"'
 
-vp = ViewParser()
 output_list: list[str] = []
 for line in out:
     matches = re.findall(pattern, line)
     for match in matches:
         try:
-            new_view = vp.from_str(match)
+            new_view = ViewParser.from_str(match)
         except ParsingError:
             new_view = None
         if new_view is not None and match not in output_list:

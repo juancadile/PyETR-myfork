@@ -84,11 +84,10 @@ class BaseParseItem(pytest.Item):
 
 class ParseTestItem(BaseParseItem):
     def runtest(self):
-        vp = ViewParser()
-        parsed_view = vp.from_str(self.view_string)
+        parsed_view = ViewParser.from_str(self.view_string)
         assert parsed_view.detailed
-        string_recovered = vp.to_str(parsed_view, round_ints=False)
-        alt_string = vp.to_str(parsed_view, round_ints=True)
+        string_recovered = ViewParser.to_str(parsed_view, round_ints=False)
+        alt_string = ViewParser.to_str(parsed_view, round_ints=True)
         if (
             not length_identity_test(self.view_string, string_recovered)
             and not length_identity_test(self.view_string, alt_string)
@@ -101,14 +100,13 @@ class ParseTestItem(BaseParseItem):
 
 class ParseCompareViaJson(BaseParseItem):
     def runtest(self):
-        vp = ViewParser()
-        parsed_view = vp.from_str(self.view_string)
-        out_view = vp.from_json(vp.to_json(parsed_view))
+        parsed_view = ViewParser.from_str(self.view_string)
+        out_view = ViewParser.from_json(ViewParser.to_json(parsed_view))
         if parsed_view != out_view:
             raise ValueError(
                 f"View lost in json conversion, start: {parsed_view}, end: {out_view}"
             )
-        out_view = vp.from_json(vp.to_json(parsed_view))
+        out_view = ViewParser.from_json(ViewParser.to_json(parsed_view))
         if parsed_view != out_view:
             raise ValueError(
                 f"View lost in yoyo json conversion, start: {parsed_view}, end: {out_view}"
@@ -117,9 +115,8 @@ class ParseCompareViaJson(BaseParseItem):
 
 class ParseCompareViaString(BaseParseItem):
     def runtest(self):
-        vp = ViewParser()
-        parsed_view = vp.from_str(self.view_string)
-        out_view = vp.from_str(vp.to_str(parsed_view))
+        parsed_view = ViewParser.from_str(self.view_string)
+        out_view = ViewParser.from_str(ViewParser.to_str(parsed_view))
         if parsed_view != out_view:
             raise ValueError(
                 f"View lost in yoyo string conversion, start: {parsed_view}, end: {out_view}"
@@ -128,11 +125,10 @@ class ParseCompareViaString(BaseParseItem):
 
 class ParseCompareViaFOL(BaseParseItem):
     def runtest(self):
-        vp = ViewParser()
-        parsed_view = vp.from_str(self.view_string)
+        parsed_view = ViewParser.from_str(self.view_string)
 
         try:
-            out_view = vp.from_fol(vp.to_fol(parsed_view))
+            out_view = ViewParser.from_fol(ViewParser.to_fol(parsed_view))
             if parsed_view != out_view:
                 raise ValueError(
                     f"View lost in yoyo FOL conversion, start: {parsed_view}, end: {out_view}"
@@ -155,9 +151,8 @@ class OperationTest(pytest.Item):
         )
 
     def runtest(self):
-        vp = ViewParser()
-        parsed_view1 = vp.from_str(self.view_string1)
-        parsed_view2 = vp.from_str(self.view_string1)
+        parsed_view1 = ViewParser.from_str(self.view_string1)
+        parsed_view2 = ViewParser.from_str(self.view_string1)
 
         parsed_view1.product(parsed_view2)
         try:

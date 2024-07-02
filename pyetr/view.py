@@ -453,7 +453,7 @@ class View:
     def get_falsum(cls):
         verum = SetOfStates({State({})})
         falsum = SetOfStates()
-        return View(
+        return cls(
             stage=falsum,
             supposition=verum,
             dependency_relation=DependencyRelation(set(), set(), frozenset()),

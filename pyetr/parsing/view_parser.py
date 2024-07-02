@@ -13,8 +13,8 @@ class ViewParser:
     Tool used to easily parse views between different forms
     """
 
-    @staticmethod
-    def from_json(s: str) -> View:
+    @classmethod
+    def from_json(cls, s: str) -> View:
         """
         Parses from json form to View form
 
@@ -26,8 +26,8 @@ class ViewParser:
         """
         return json_to_view(s)
 
-    @staticmethod
-    def to_json(v: View) -> str:
+    @classmethod
+    def to_json(cls, v: View) -> str:
         """
         Parses from View form to json form
 
@@ -39,9 +39,9 @@ class ViewParser:
         """
         return view_to_json(v)
 
-    @staticmethod
+    @classmethod
     def from_str(
-        s: str, custom_functions: list[NumFunc | Function] | None = None
+        cls, s: str, custom_functions: list[NumFunc | Function] | None = None
     ) -> View:
         """
         Parses from view string form to view form.
@@ -57,8 +57,8 @@ class ViewParser:
         """
         return string_to_view(s, custom_functions)
 
-    @staticmethod
-    def to_str(v: View, **string_conversion_args: Any) -> str:
+    @classmethod
+    def to_str(cls, v: View, **string_conversion_args: Any) -> str:
         """
         Parses from View form to view string form
 
@@ -70,9 +70,9 @@ class ViewParser:
         """
         return view_to_string(v, **string_conversion_args)
 
-    @staticmethod
+    @classmethod
     def from_fol(
-        s: str, custom_functions: list[NumFunc | Function] | None = None
+        cls, s: str, custom_functions: list[NumFunc | Function] | None = None
     ) -> View:
         """
         Parses from first order logic string form to View form.
@@ -86,8 +86,8 @@ class ViewParser:
         """
         return fol_to_view(s, custom_functions=custom_functions)
 
-    @staticmethod
-    def to_fol(v: View) -> str:
+    @classmethod
+    def to_fol(cls, v: View) -> str:
         """
         Parses from View form to first order logic string form.
 
