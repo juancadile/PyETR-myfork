@@ -35,7 +35,7 @@ Contains the classifications of [arbitrary objects](#arbitrary-object) into univ
 
 ## Do Atom
 
-An atom formed by the keyword `do` applied to a [set](#set) of [atoms](#atoms).
+An atom formed by the keyword `do` applied to a [set](#set) of [atoms](#atom).
 A chain of reasoning that ends in a view such as `{ do(A B C) }` means making a decision to 'act so as to make `A`, `B`, and `C` the case'.
 
 ## Factor
@@ -155,7 +155,7 @@ A weight is a [multiset](#multiset) of [terms](#term) designated as either the a
 
 ## Weighted state
 
-Each [state](#state) in a [stage](#stage) is equipped with extra non-logical content in the form of additive and multiplicative [weights](#weights), making it a weighted state.
+Each [state](#state) in a [stage](#stage) is equipped with extra non-logical content in the form of additive and multiplicative [weights](#weight), making it a weighted state.
 States in [suppositions](#supposition) do not come with weights.
 One or both of the weights can be empty.
 A weighted state where both weights are the empty multiset is notated just as an ordinary state.

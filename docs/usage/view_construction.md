@@ -179,7 +179,7 @@ A function taking a empty list of arguments is essentially the same as a constan
 Thus these functional terms are used to stand for the names of individuals, as in `Clark()` and `Superman()` above, as well as `j()`, `s()`, and `g()` ('John', 'Sally', and 'George').
 
 Compound terms where functions take one or more arguments most often appear in mathematical expressions.
-For example, in [Example 93](e93_grp1) the follow term appears, which is formed by applying the function `power` to a list of two other terms.
+For example, in [Example 93](../reference/case_index.md#e93_grp1) the follow term appears, which is formed by applying the function `power` to a list of two other terms.
 ```
 power(σ(1.0,log(σ(1.0,x))),-1.0)
 ```
