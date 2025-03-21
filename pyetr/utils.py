@@ -23,7 +23,7 @@ def smt_lib_to_views(
             for using func callers. Defaults to None.
 
     Returns:
-        list[View]: _description_
+        list[View]: The list of views found in the smt lib string.
     """
     return [
         View._from_view_storage(i)

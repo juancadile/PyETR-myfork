@@ -519,6 +519,16 @@ class View:
             weights=weights,
         )
 
+    @property
+    def without_issues(self) -> Self:
+        return self.__class__.with_defaults(
+            stage=self.stage,
+            supposition=self.supposition,
+            dependency_relation=self.dependency_relation,
+            issue_structure=IssueStructure(),
+            weights=self.weights,
+        )
+
     @classmethod
     def with_restriction(
         cls,

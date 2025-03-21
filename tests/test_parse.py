@@ -17,6 +17,11 @@ class TestFunction:
         output_view = View.from_fol(input_string)
         assert output_view.detailed
 
+    def test_base(self):
+        input_string = "∀x ∃y (S(j()*) ∧  D(n()*)) ∨ (T(j()) ∧ ~D(j()*) ∧ D(f(y, x)*))"
+        output_view = View.from_fol(input_string)
+        assert output_view.base
+
     def test_repr(self):
         input_string = "∀x ∃y (S(j()*) ∧  D(n()*)) ∨ (T(j()) ∧ ~D(j()*) ∧ D(f(y, x)*))"
         output_view = View.from_fol(input_string)
