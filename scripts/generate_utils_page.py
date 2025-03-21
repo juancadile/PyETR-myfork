@@ -2,17 +2,7 @@ import inspect
 
 import pyetr.utils
 
-
-def get_line_no(item):
-    if item:
-        # Get the source file and line number
-        _, start_line_number = inspect.getsourcelines(item)
-        url_prefix = (
-            "https://github.com/dreamingspires/PyETR/blob/master/pyetr/utils.py#L"
-        )
-        return f"\n[Link to code]({url_prefix}{start_line_number})\n\n"
-    else:
-        return ""
+from .common import get_line_no
 
 
 def main():
@@ -25,7 +15,13 @@ def main():
             else:
                 new_doc = ""
             out.append(
-                "`" + name + "`" + get_line_no(func) + "\n```\n" + new_doc + "\n```"
+                "`"
+                + name
+                + "`"
+                + get_line_no(func, "utils")
+                + "\n```\n"
+                + new_doc
+                + "\n```"
             )
 
     with open("./docs/reference/utils_index.md", "w+") as f:
