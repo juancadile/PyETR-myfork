@@ -12,6 +12,7 @@ __all__ = [
     "ArbitraryObjectGenerator",
     "View",
     "DoAtom",
+    "__version__",
 ]
 
 from .atoms import DoAtom, Predicate, PredicateAtom, equals_predicate
@@ -20,3 +21,5 @@ from .dependency import Dependency, DependencyRelation
 from .stateset import SetOfStates, State
 from .tools import ArbitraryObjectGenerator
 from .view import View
+
+__version__ = "0.2.5"

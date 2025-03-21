@@ -1,9 +1,9 @@
 # Inference Index
 
-Below you'll find all of the cases in pyetr.cases, and their associated views. You can use this page as an index of the current cases.
+Below you'll find all of the inference functions in pyetr.inference. You can use this page as an index of the inference methods.
 
 ## `basic_step`
-[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L31)
+[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L20)
 
 
 ```
@@ -20,7 +20,7 @@ Returns:
 ```
 
 ## `default_inference_procedure`
-[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L53)
+[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L42)
 
 
 ```
@@ -38,7 +38,7 @@ Returns:
 ```
 
 ## `default_procedure_does_it_follow`
-[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L92)
+[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L81)
 
 
 ```
@@ -58,7 +58,7 @@ Returns:
 ```
 
 ## `default_procedure_what_is_prob`
-[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L136)
+[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L125)
 
 
 ```
@@ -89,7 +89,7 @@ Returns:
 ```
 
 ## `default_decision`
-[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L230)
+[Link to code](https://github.com/dreamingspires/PyETR/blob/master/pyetr/inference.py#L219)
 
 
 ```

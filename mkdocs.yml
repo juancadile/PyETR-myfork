@@ -26,6 +26,7 @@ nav:
     - 'Case Index': 'reference/case_index.md'
     - 'View Methods': 'reference/view_methods.md'
     - 'Inference Index': 'reference/inference_index.md'
+    - 'Utilities Index': 'reference/utils_index.md'
   - 'Glossary' : 'glossary.md'
   - 'For Developers': 'development.md'
   - 'Credits': 'credits.md'

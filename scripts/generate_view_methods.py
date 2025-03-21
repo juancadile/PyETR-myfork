@@ -3,6 +3,8 @@ from typing import get_overloads
 
 from pyetr.view import View
 
+from .common import get_line_no
+
 relevant_methods: dict[str, list[str]] = {
     "## View Operations": [
         "product",
@@ -40,18 +42,6 @@ relevant_methods: dict[str, list[str]] = {
 }
 
 
-def get_line_no(method):
-    if callable(method):
-        # Get the source file and line number
-        _, start_line_number = inspect.getsourcelines(method)
-        url_prefix = (
-            "https://github.com/dreamingspires/PyETR/blob/master/pyetr/view.py#L"
-        )
-        return f"\n[Link to code]({url_prefix}{start_line_number})\n\n"
-    else:
-        return ""
-
-
 def main():
     out = []
     for section, section_items in relevant_methods.items():
@@ -69,7 +59,7 @@ def main():
                             + name
                             + f" (overload{str(i+1)})"
                             + "`\n"
-                            + get_line_no(overload)
+                            + get_line_no(overload, "view")
                             + "```\n"
                             + doc
                             + "\n```"
@@ -82,7 +72,7 @@ def main():
                         "### `"
                         + name
                         + "`\n"
-                        + get_line_no(method)
+                        + get_line_no(method, "view")
                         + "```\n"
                         + doc
                         + "\n```"
