@@ -2,7 +2,8 @@
 
 Welcome to the PyETR documentation!
 
-PyETR is a Python implementation of the Erotetic Theory of Reasoning (ETR) as presented in the book *Reason & Inquiry*, OUP 2023.
+PyETR (we like to pronounce it like "Peter") is a Python implementation of the Erotetic Theory of Reasoning (ETR) as presented in the book *Reason & Inquiry*, OUP 2023.
+
 From [the publisher](https://global.oup.com/academic/product/reason-and-inquiry-9780198823766?cc=gb&lang=en&#):
 
 !!! quote " "
@@ -13,7 +14,11 @@ From [the publisher](https://global.oup.com/academic/product/reason-and-inquiry-
 !!! book "Note for readers of *Reason and Inquiry*"
     Anywhere you see a box like this one will be a reference to the book *Reason & Inquiry*.
 
-Most users can dive straight in [here](./getting_started/overview.md) for the overview of the book and code. Book readers who may wish to understand how it relates to the code should instead begin [here](./theory/systems.md), before returning to the overview in "Getting Started".
+
+For very short discussion of the erotetic theory see [Koralus and Wang-Maścianica 2023](https://arxiv.org/abs/2303.17276). The earliest version of a fragment of the erotetic theory of reason (not fully equivalent to the present version) goes back to [Koralus and Mascarenhas 2013](https://onlinelibrary.wiley.com/doi/10.1111/phpe.12029). 
+
+Most users can dive straight in [here](./getting_started/overview.md) for the overview of the book and code. This documentation focuses features of the python package and does not attempt to provide a standalone motivation or explanation of the erotetic theory, which is a book length endeavour. Book readers who may wish to understand how it relates to the code should instead begin [here](./theory/systems.md), before returning to the overview in "Getting Started"."
+
 
 The documentation is structured as follows.
 

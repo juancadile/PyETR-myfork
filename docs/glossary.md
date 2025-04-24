@@ -2,12 +2,11 @@
 
 ## Arbitrary Object
 
-A kind of term. Analogous to 'bound variable' in logic.
-Comes in two kinds: 'universal arbitrary objects' can be read as generic objects, 'existential arbitrary objects' can be read as a specific but unidentified object.
+A kind of term. Analogous to 'bound variable' in logic. Comes in two kinds: 'universal arbitrary objects' are analogous to universally quantified variables, 'existential arbitrary objects' are analogous to existentially quantified variables.
 
 ## Arity
 
-The 'number' of arguments received by a function. In PyETR, this usually is a non-negative integer, but some terms such as Summation take a multiset of terms.
+The 'number' of arguments received by a function or predicate. In PyETR, this usually is a non-negative integer, but some terms such as Summation take a multiset of terms.
 
 ## Atom
 
@@ -20,9 +19,7 @@ A 0-[arity](#arity) functional term.
 
 ## Default Reasoning Procedure
 
-The current expected way that a person processes a series of views
-
-All operations take an initial view, and take on board a second view through the lens of the first, to produce a third view.
+The erotetic theory of reason holds that the primary aim of reason is to answer a question a reasoner has taken on board as directly as possible and arrive at a residual view that includes only what is "novel" after a judgment is made. The default reasoning procedure is an algorithmic empirical hypothesis about what the central tendency of the system is in terms of inferences being made, expressed in terms of operations like [Update](#update), [Merge](#merge), Answer, and [Factor](#factor).
 
 ## Dependency
 

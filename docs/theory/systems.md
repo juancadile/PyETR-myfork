@@ -4,18 +4,19 @@ On this page we recap the structure of the book *Reason & Inquiry* and explain h
 
 ## Four versions of the ETR system
 
-*Reason & Inquiry* introduces four versions of ETR where the possible contents of views increase in sophistication.
-We can label them by the number of the chapter that introduces each one and here we briefly summarize the characteristic features that each introduces.
+*Reason & Inquiry* incrementally builds up erotic theory vertically through successive degrees of expressive power in what views can represent.
 
-- **Chapter 2:** views can express sentences of propositional logic.
-- **Chapter 4:** adds terms and arbitrary objects; now views can express sentences of first-order logic.
-- **Chapter 5:** states are now weighted, hence views can express reasoning under uncertainty.
-- **Chapter 6:** states now have two weights (multiplicative and additive) each and can contain do-atoms, hence views can express decision-making (under uncertainty).
+- **Chapter 2:** introduces the most basic case: views that can express the contents of sentences in sentential logic.
+- **Chapter 4:** adds terms and arbitrary objects. With these additions, views can now express the kinds of contents that first-order logic can talk about. In Stuart Russell’s slightly humorous phrase, this gives us the power "to represent the most important aspects of the real word, such as action, space, time, thoughts, and shopping".
+- **Chapter 5:** introduces weighted states, that allow us to express reasoning under uncertainty.
+- **Chapter 6:** introduces states with dual weights (multiplicative and additive) as well as do-atoms, allowing views to capture decision-making (under uncertainty).
 
-The richer view contents means that subsequent systems redefine named operations defined in earlier systems.
-They also add new operations.
 
-PyETR implements the Chapter 6 system, [with a few modifications](./differences.md). Since all of the other systems can be translated into the Chapter 6 one, this allows us to use PyETR to study examples written for any of the systems in R&I. In practice, this means there is occasionally a little notational overhead, most notable in [View Construction](../usage/view_construction.md).
+The DNA of the reasoning operations of the erotetic theory stays the same throughout, in that subsequent increases of expressive power strictly generalise the weaker systems. In each level of expressive power do we get a version of the following result (informally stated here, but defined and proved formally in the book): 
+
+If the judgment of the reasoner is in erotetic equilibrium (that is, the judgment is still available regardless of how many further questions are taken on board), then the judgment satisfies classical constraints on rational inference. For first-order and sentential logic equivalent expressive power, this means classical validity. For reasoning under uncertainty, this means Bayesian coherence. For decision making, this means rational choice. The book takes the view that it is not always a rational requirement to satisfy these standards.
+
+PyETR implements the erotetic theory through Chapter 6, [with a few modifications](./differences.md). Since all of the other systems can be translated into the Chapter 6 one, this allows us to use PyETR to study examples written for any of the systems in R&I. In practice, this means there is occasionally a little notational overhead, most notable in [View Construction](../usage/view_construction.md).
 
 ## Translations between systems
 
