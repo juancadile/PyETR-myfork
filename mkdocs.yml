@@ -1,4 +1,6 @@
 site_name: PyETR
+repo_url: https://github.com/Oxford-HAI-Lab/PyETR
+repo_name: Oxford-HAI-Lab/PyETR
 
 nav:
   - 'Home': 'index.md'
@@ -35,6 +37,7 @@ theme:
   features:
     - content.code.copy
     - navigation.footer
+    - navigation.top
   palette:
     - scheme: default
       primary: 'black'
