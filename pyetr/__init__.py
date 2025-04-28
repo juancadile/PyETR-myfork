@@ -22,4 +22,4 @@ from .stateset import SetOfStates, State
 from .tools import ArbitraryObjectGenerator
 from .view import View
 
-__version__ = "0.2.8"
+__version__ = "1.0.0"
