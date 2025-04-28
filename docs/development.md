@@ -78,3 +78,17 @@ poetry build
 You can make a new release [here](https://github.com/Oxford-HAI-Lab/PyETR/releases/new)
 
 Be sure to upload the `*.tar.gz` and `*.whl` files found in the ./dist directory.
+
+# Testing
+
+For a test program, enter the tests directory and run:
+
+`poetry run pytest -n auto`
+
+For more advanced tests:
+
+`poetry run pytest -n auto --viewops`
+
+For coverage of pyetr (from tests folder):
+
+`poetry run pytest -n 8 --viewops --cov=../pyetr/ --cov-report=term-missing`

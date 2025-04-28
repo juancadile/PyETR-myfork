@@ -1,9 +1,15 @@
-[tool.poetry]
+[project]
 name = "pyetr"
-version = "0.2.5"
-description = ""
-authors = ["mark-todd <markpeter.todd@hotmail.co.uk>"]
+version = "0.2.6"
+description = "A Python implementation of the Erotetic Theory of Reasoning (ETR) as presented in the book Reason & Inquiry, OUP 2023"
+authors = [
+    { name = "Mark Todd", email = "markpeter.todd@hotmail.co.uk" },
+]
 readme = "README.md"
+
+[project.urls]
+Documentation = "https://oxford-hai-lab.github.io/PyETR"
+Source = "https://github.com/Oxford-HAI-Lab/PyETR"
 
 [tool.poetry.dependencies]
 python = ">=3.11"
