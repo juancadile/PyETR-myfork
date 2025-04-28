@@ -2,9 +2,13 @@
 
 Welcome to the PyETR Project!
 
-## Documentation
+---
 
-**Documentation**: https://oxford-hai-lab.github.io/PyETR/
+**Documentation**: https://oxford-hai-lab.github.io/PyETR
+
+**Source**: https://github.com/Oxford-HAI-Lab/PyETR
+
+---
 
 ## Installation
 
